@@ -36,6 +36,11 @@ options:
         - List of containers specifying name, image and other options.
      required: false
      default: []
+   labels:
+     description:
+        - A dictionary representing key, value pairs.
+     required: false
+     default: {}
 requirements:
    TODO
 '''
@@ -49,6 +54,8 @@ kubernetes_pod:
     image: nginx
     ports:
     - containerPort: 8080
+  labels:
+    app: frontend
 
 '''
 
@@ -57,7 +64,7 @@ def main():
         name                            = dict(required=True),
         state                           = dict(default='present', choices=['absent', 'present']),
         containers                      = dict(default=[]),
-        labels                          = dict(default=[]),
+        labels                          = dict(default={}),
     )
     module_kwargs = kubernetes_module_kwargs(
         mutually_exclusive=[],
