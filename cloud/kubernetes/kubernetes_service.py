@@ -61,9 +61,11 @@ kubernetes_service:
 def main():
     argument_spec = kubernetes_argument_spec(
         name                            = dict(required=True),
+        labels                          = dict(default={}),
         state                           = dict(default='present', choices=['absent', 'present']),
         selector                        = dict(default={}),
-        ports                           = dict(default=[])
+        ports                           = dict(default=[]),
+        service_type                    = dict(default=None)
     )
     module_kwargs = kubernetes_module_kwargs(
         mutually_exclusive=[],
@@ -76,8 +78,10 @@ def main():
 
     state = module.params['state']
     name = module.params['name']
+    labels = module.params['labels']
     selector = module.params['selector']
     ports = module.params['ports']
+    service_type = module.params['service_type']
 
     service = kube_client.get_service(name)
 
@@ -87,7 +91,7 @@ def main():
         if service is not None:
             module.exit_json(changed=changed, name=name)
         else:
-            result = kube_client.create_service(name=name, selector=selector, ports=ports)
+            result = kube_client.create_service(name=name, labels=labels, selector=selector, ports=ports, service_type=service_type)
             changed = True
             module.exit_json(changed=changed, name=name, result=result)
     elif state == 'absent':

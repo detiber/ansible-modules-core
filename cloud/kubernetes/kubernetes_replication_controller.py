@@ -120,7 +120,7 @@ def main():
                              containers=containers,
                              labels=labels,
                              replicas=replicas,
-                             selector=selector
+                             selector=selector,
                              result=result)
     elif state == 'absent':
         if pod is not None:
